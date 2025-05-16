@@ -1,0 +1,1018 @@
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>New neavez</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #C4C4C4 0%, #5A5A5A 100%);
+      min-height: 100vh;
+      color: #000000;
+      scroll-behavior: smooth;
+    }
+    /* Recipiente de morfismo de vidro */
+    .glass {
+      background: rgba(255 255 255 / 0.25);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 1.25rem;
+      border: 1px solid rgba(255 255 255 / 0.4);
+      box-shadow:
+        0 12px 40px 0 rgba(31, 38, 135, 0.12),
+        0 0 0 1px rgba(255 255 255 / 0.25);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .glass:hover {
+      box-shadow:
+        0 20px 60px 0 rgba(31, 38, 135, 0.3),
+        0 0 0 1px rgba(255 255 255 / 0.4);
+      transform: translateY(-4px);
+    }
+    /* Barra de rolagem para comentários e notícias */
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background-color: rgba(100, 100, 100, 0.4);
+      border-radius: 4px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    /* Foco personalizado para botões */
+    button:focus-visible,
+    a:focus-visible {
+      outline-offset: 3px;
+      outline: 3px solid #FFFFFF;
+      outline-radius: 0.5rem;
+    }
+    /* Sombra e fundo do cabeçalho */
+    header {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: saturate(180%) blur(22px);
+      -webkit-backdrop-filter: saturate(180%) blur(22px);
+      border-bottom: 1px solid rgba(203, 213, 225, 0.6);
+      z-index: 70;
+      height: 60px;
+      width:100%;
+    }
+    /* Barra de rolagem para lista de notícias */
+    #newsList {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(100, 100, 100, 0.3) transparent;
+    }
+    #newsList::-webkit-scrollbar {
+      width: 10px;
+    }
+    #newsList::-webkit-scrollbar-thumb {
+      background-color: rgba(100, 100, 100, 0.3);
+      border-radius: 5px;
+    }
+    /* Tooltip container */
+    .tooltip {
+      position: relative;
+      cursor: pointer;
+    }
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      width: max-content;
+      max-width: 220px;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: #f9fafb;
+      text-align: center;
+      border-radius: 0.375rem;
+      padding: 0.4rem 0.6rem;
+      position: absolute;
+      z-index: 100;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.875rem;
+      line-height: 1.2;
+      pointer-events: none;
+    }
+    .tooltip:hover .tooltip-text,
+    .tooltip:focus-within .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    /* Scroll to top button */
+    #scrollTopBtn {
+      position: fixed;
+      bottom: 2.5rem;
+      right: 2.5rem;
+      background: #4f46e5;
+      color: white;
+      border-radius: 9999px;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.5);
+      cursor: pointer;
+      display: none;
+      z-index: 100;
+      transition: background-color 0.3s ease;
+    }
+    #scrollTopBtn:hover {
+      background: #4338ca;
+    }
+    /* Dark mode overrides */
+    .dark body {
+      background: linear-gradient(135deg, #292929 0%, #151515 100%);
+      color: #d1d5db;
+    }
+    .dark header {
+      background: rgba(17, 24, 39, 0.9);
+      border-bottom: 1px solid rgba(75, 85, 99, 0.6);
+    }
+    .dark .glass {
+      background: rgba(31, 41, 55, 0.5);
+      border: 1px solid rgba(255 255 255 / 0.15);
+      box-shadow:
+        0 12px 40px 0 rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255 255 255 / 0.15);
+    }
+    .dark .glass:hover {
+      box-shadow:
+        0 20px 60px 0 rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255 255 255 / 0.25);
+      transform: translateY(-4px);
+    }
+    .dark a {
+      color: #818cf8;
+    }
+    .dark a:hover {
+      color: #a5b4fc;
+    }
+    .dark #commentsContainer {
+      background-color: #1e293b;
+      color: #d1d5db;
+    }
+    .dark #commentsContainer > div {
+      background-color: #374151;
+      color: #d1d5db;
+    }
+    /* Loading spinner */
+    .spinner {
+      border: 4px solid rgba(0,0,0,0.1);
+      border-left-color: #4f46e5;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between px-8 py-5 shadow-md sticky top-0">
+    <h1 class="text-4xl font-extrabold tracking-tight text-indigo-700 select-none drop-shadow-md">
+      Notícias neavez
+    </h1>
+    <div class="relative">
+      <button
+        id="menuBtn"
+        aria-label="Abrir menu de opções"
+        class="text-indigo-700 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded p-3 transition"
+        title="Menu de opções"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <i class="fas fa-ellipsis-v fa-lg"></i>
+      </button>
+      <nav
+        id="menu"
+        class="hidden absolute right-0 mt-3 w-56 glass shadow-xl py-4 text-indigo-900 font-semibold rounded-xl ring-1 ring-indigo-300"
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby="menuBtn"
+      >
+        <button
+          id="toggleThemeBtn"
+          class="w-full text-left px-6 py-3 hover:bg-indigo-100 flex items-center gap-4 transition"
+          role="menuitem"
+          tabindex="0"
+        >
+          <i class="fas fa-adjust text-indigo-600"></i> Mudar Tema
+        </button>
+        <button
+          id="interestsBtn"
+          class="w-full text-left px-6 py-3 hover:bg-indigo-100 flex items-center gap-4 transition"
+          role="menuitem"
+          tabindex="0"
+        >
+          <i class="fas fa-star text-yellow-500"></i> Interesses
+        </button>
+        <button
+          id="notificationsBtn"
+          class="w-full text-left px-6 py-3 hover:bg-indigo-100 flex items-center gap-4 transition"
+          role="menuitem"
+          tabindex="0"
+        >
+          <i class="fas fa-bell text-red-500"></i> Notificações
+        </button>
+        <button
+          id="accountBtn"
+          class="w-full text-left px-6 py-3 hover:bg-indigo-100 flex items-center gap-4 transition"
+          role="menuitem"
+          tabindex="0"
+        >
+          <i class="fas fa-user text-indigo-700"></i> Conta
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Barra de pesquisa e filtro -->
+  <section class="max-w-6xl mx-auto px-8 py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Buscar notícias..."
+      aria-label="Buscar notícias"
+      class="flex-grow rounded-xl border border-indigo-300 px-5 py-3 text-indigo-900 placeholder-indigo-400 shadow-md focus:outline-none focus:ring-4 focus:ring-indigo-400 transition"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <select
+      id="sortSelect"
+      aria-label="Ordenar notícias"
+      class="rounded-xl border border-indigo-300 px-5 py-3 text-indigo-900 shadow-md focus:outline-none focus:ring-4 focus:ring-indigo-400 transition max-w-xs"
+    >
+      <option value="recent">Mais Recentes</option>
+      <option value="liked">Mais Curtidas</option>
+      <option value="comments">Mais Comentadas</option>
+      <option value="title">Ordem Alfabética</option>
+    </select>
+  </section>
+
+  <!-- Main content -->
+  <main class="flex-grow max-w-6xl mx-auto px-8 pb-16 space-y-12" id="newsList" aria-live="polite" aria-relevant="additions">
+    <!-- Notícias carregadas via API aparecerão aqui -->
+  </main>
+
+  <!-- Modal para comentários -->
+  <div
+    id="commentsModal"
+    class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-6 hidden z-50"
+    aria-modal="true"
+    role="dialog"
+    aria-labelledby="commentsModalTitle"
+  >
+    <div class="glass max-w-4xl w-full max-h-[85vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden border border-indigo-300">
+      <header class="flex justify-between items-center px-10 py-5 border-b border-indigo-300">
+        <h6 id="commentsModalTitle" class="text-3xl font-semibold text-indigo-900 select-none">
+          
+        </h6>
+        <button
+          id="closeCommentsBtn"
+          aria-label="Fechar comentários"
+          class="text-indigo-700 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-600 rounded p-3 transition"
+          title="Fechar comentários"
+        >
+          <i class="fas fa-times fa-lg"></i>
+        </button>
+      </header>
+      <div
+        id="commentsContainer"
+        class="flex-grow overflow-y-auto px-10 py-8 space-y-6 scrollbar-thin bg-indigo-50 rounded-b-2xl"
+        tabindex="0"
+      >
+        <!-- Comentários aparecerão aqui -->
+      </div>
+      <form id="commentForm" class="px-10 py-6 border-t border-indigo-300 flex gap-6 bg-indigo-100 rounded-b-2xl">
+        <input
+          type="text"
+          id="commentInput"
+          placeholder="Escreva um comentário..."
+          class="flex-grow rounded-2xl px-6 py-4 text-indigo-900 placeholder-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-500 shadow-lg"
+          required
+          aria-label="Campo para escrever comentário"
+          autocomplete="off"
+          spellcheck="true"
+        />
+        <button
+          type="submit"
+          class="bg-indigo-700 hover:bg-indigo-800 text-white rounded-2xl px-8 py-4 flex items-center gap-4 font-extrabold shadow-lg transition"
+          aria-label="Enviar comentário"
+        >
+          <i class="fas fa-paper-plane"></i> Enviar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scroll to top button -->
+  <button id="scrollTopBtn" aria-label="Voltar ao topo" title="Voltar ao topo" tabindex="0">
+    <i class="fas fa-arrow-up fa-lg"></i>
+  </button>
+
+  <script>
+    // Estado do tema
+    let darkMode = false;
+
+    // Toggle menu
+    const menuBtn = document.getElementById('menuBtn');
+    const menu = document.getElementById('menu');
+    menuBtn.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+      const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+      menuBtn.setAttribute('aria-expanded', !expanded);
+    });
+
+    // Fechar menu ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!menu.contains(e.target) && e.target !== menuBtn) {
+        menu.classList.add('hidden');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Toggle tema claro/escuro
+    const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+    toggleThemeBtn.addEventListener('click', () => {
+      darkMode = !darkMode;
+      if (darkMode) {
+        document.documentElement.classList.add('dark');
+        document.body.classList.add('bg-gray-900', 'text-gray-200');
+        document.querySelector('header').style.background = 'rgba(17, 24, 39, 0.9)';
+        document.querySelector('header').style.borderBottom = '1px solid rgba(75, 85, 99, 0.6)';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.body.classList.remove('bg-gray-900', 'text-gray-200');
+        document.querySelector('header').style.background = '#fff';
+        document.querySelector('header').style.borderBottom = '1px solid rgba(203, 213, 225, 0.6)';
+      }
+      menu.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    });
+
+    // Placeholder para interesses, notificações e conta
+    document.getElementById('interestsBtn').addEventListener('click', () => {
+      alert('Funcionalidade de interesses ainda não implementada.');
+      menu.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    });
+    document.getElementById('notificationsBtn').addEventListener('click', () => {
+      alert('Funcionalidade de notificações ainda não implementada.');
+      menu.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    });
+    document.getElementById('accountBtn').addEventListener('click', () => {
+      alert('Funcionalidade de conta ainda não implementada.');
+      menu.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    });
+
+    // Dados simulados de notícias com imagens geradas dinamicamente via placehold.co com texto da notícia
+    const newsData = [
+      {
+        id: 1,
+        title: "Descoberta científica revoluciona tratamento de doenças",
+        description:
+          "Pesquisadores anunciaram uma nova técnica que promete acelerar a cura de diversas doenças crônicas.",
+        image:
+          "https://placehold.co/600x400/png?text=Descoberta+científica+revoluciona+tratamento+de+doenças&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.cienciahoje.com.br/noticia/descoberta-revolucionaria",
+        sourceName: "Ciência Hoje",
+      },
+      {
+        id: 2,
+        title: "Economia global apresenta sinais de recuperação em 2024",
+        description:
+          "Especialistas apontam que a economia mundial está mostrando sinais positivos após anos de instabilidade.",
+        image:
+          "https://placehold.co/600x400/png?text=Economia+global+apresenta+sinais+de+recuperação+em+2024&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.economiaagora.com.br/noticia/recuperacao-global",
+        sourceName: "Economia Agora",
+      },
+      {
+        id: 3,
+        title: "Tecnologia 5G expande cobertura em áreas rurais",
+        description:
+          "Operadoras investem para levar internet de alta velocidade a regiões antes desconectadas.",
+        image:
+          "https://placehold.co/600x400/png?text=Tecnologia+5G+expande+cobertura+em+áreas+rurais&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.tecnologiaemfoco.com.br/noticia/5g-rural",
+        sourceName: "Tecnologia em Foco",
+      },
+      {
+        id: 4,
+        title: "Festival cultural celebra diversidade e arte local",
+        description:
+          "Evento reúne artistas de várias regiões para mostrar a riqueza cultural do país.",
+        image:
+          "https://placehold.co/600x400/png?text=Festival+cultural+celebra+diversidade+e+arte+local&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.culturaonline.com.br/noticia/festival-diversidade",
+        sourceName: "Cultura Online",
+      },
+      {
+        id: 5,
+        title: "Novas políticas ambientais ganham força no Congresso",
+        description:
+          "Projetos para proteção das florestas e incentivo à energia limpa avançam nas discussões.",
+        image:
+          "https://placehold.co/600x400/png?text=Novas+políticas+ambientais+ganham+força+no+Congresso&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.meioambiente.gov.br/noticia/politicas-ambientais",
+        sourceName: "Meio Ambiente Gov",
+      },
+      {
+        id: 6,
+        title: "Avanços na inteligência artificial transformam o mercado de trabalho",
+        description:
+          "Novas ferramentas automatizam tarefas e criam oportunidades em setores inovadores.",
+        image:
+          "https://placehold.co/600x400/png?text=Avanços+na+inteligência+artificial+transformam+o+mercado+de+trabalho&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.tecnologiaavancada.com.br/noticia/ia-mercado-trabalho",
+        sourceName: "Tecnologia Avançada",
+      },
+      {
+        id: 7,
+        title: "Saúde mental ganha destaque em campanhas públicas",
+        description:
+          "Iniciativas buscam conscientizar a população sobre a importância do cuidado psicológico.",
+        image:
+          "https://placehold.co/600x400/png?text=Saúde+mental+ganha+destaque+em+campanhas+públicas&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.saude.gov.br/noticia/saude-mental",
+        sourceName: "Saúde Gov",
+      },
+      {
+        id: 8,
+        title: "Esportes: time nacional conquista campeonato internacional",
+        description:
+          "Vitória histórica marca o crescimento do esporte no país e inspira jovens atletas.",
+        image:
+          "https://placehold.co/600x400/png?text=Esportes+time+nacional+conquista+campeonato+internacional&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.esportesbrasil.com/noticia/campeonato-internacional",
+        sourceName: "Esportes Brasil",
+      },
+      {
+        id: 9,
+        title: "Educação: novas metodologias são adotadas em escolas públicas",
+        description:
+          "Ensino híbrido e tecnologias digitais transformam a experiência dos estudantes.",
+        image:
+          "https://placehold.co/600x400/png?text=Educação+novas+metodologias+são+adotadas+em+escolas+públicas&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.educacao.gov.br/noticia/metodologias-inovadoras",
+        sourceName: "Educação Gov",
+      },
+      {
+        id: 10,
+        title: "Turismo sustentável cresce com foco em preservação ambiental",
+        description:
+          "Destinos naturais investem em práticas que minimizam impactos e valorizam a cultura local.",
+        image:
+          "https://placehold.co/600x400/png?text=Turismo+sustentável+cresce+com+foco+em+preservação+ambiental&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.turismo.gov.br/noticia/turismo-sustentavel",
+        sourceName: "Turismo Gov",
+      },
+      {
+        id: 11,
+        title: "Inovação: startups brasileiras ganham destaque no mercado global",
+        description:
+          "Empresas jovens criam soluções tecnológicas que atraem investimentos internacionais.",
+        image:
+          "https://placehold.co/600x400/png?text=Inovação+startups+brasileiras+ganham+destaque+no+mercado+global&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.inovacao.com.br/noticia/startups-brasileiras",
+        sourceName: "Inovação",
+      },
+      {
+        id: 12,
+        title: "Culinária regional conquista paladares pelo mundo",
+        description:
+          "Pratos típicos ganham fama internacional e valorizam a cultura gastronômica local.",
+        image:
+          "https://placehold.co/600x400/png?text=Culinária+regional+conquista+paladares+pelo+mundo&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.gastronomia.com.br/noticia/culinaria-regional",
+        sourceName: "Gastronomia",
+      },
+      {
+        id: 13,
+        title: "Arte urbana transforma espaços públicos em galerias a céu aberto",
+        description:
+          "Grafites e murais valorizam a cultura local e atraem turistas para as cidades.",
+        image:
+          "https://placehold.co/600x400/png?text=Arte+urbana+transforma+espaços+públicos+em+galerias+a+céu+aberto&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.arteurbana.com.br/noticia/galerias-ao-ar-livre",
+        sourceName: "Arte Urbana",
+      },
+      {
+        id: 14,
+        title: "Ciência: avanços na exploração espacial ampliam conhecimento humano",
+        description:
+          "Novas missões e tecnologias permitem estudar planetas e estrelas com maior precisão.",
+        image:
+          "https://placehold.co/600x400/png?text=Ciência+avanços+na+exploração+espacial+ampliam+conhecimento+humano&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.cienciaespacial.com/noticia/avancos-exploracao",
+        sourceName: "Ciência Espacial",
+      },
+      {
+        id: 15,
+        title: "Moda sustentável ganha espaço nas passarelas internacionais",
+        description:
+          "Estilistas apostam em materiais reciclados e processos eco-friendly para criar tendências.",
+        image:
+          "https://placehold.co/600x400/png?text=Moda+sustentável+ganha+espaço+nas+passarelas+internacionais&font=Inter&font-size=24&text-color=4f46e5",
+        source: "https://www.modasustentavel.com/noticia/passarelas-eco",
+        sourceName: "Moda Sustentável",
+      },
+    ];
+
+    // Estado global para notícias (com curtidas e comentários)
+    let newsState = [];
+
+    // Inicializa o estado com dados e localStorage
+    function initializeNewsState() {
+      newsState = newsData.map((news) => {
+        const likeStorageKey = `news-like-${news.id}`;
+        const userLikeKey = `news-user-liked-${news.id}`;
+        const commentsKey = `news-comments-${news.id}`;
+        return {
+          ...news,
+          likes: parseInt(localStorage.getItem(likeStorageKey)) || 0,
+          userLiked: localStorage.getItem(userLikeKey) === 'true',
+          comments: JSON.parse(localStorage.getItem(commentsKey)) || [],
+        };
+      });
+    }
+
+    // Função para salvar estado no localStorage
+    function saveNewsState(news) {
+      const likeStorageKey = `news-like-${news.id}`;
+      const userLikeKey = `news-user-liked-${news.id}`;
+      const commentsKey = `news-comments-${news.id}`;
+      localStorage.setItem(likeStorageKey, news.likes);
+      localStorage.setItem(userLikeKey, news.userLiked ? 'true' : 'false');
+      localStorage.setItem(commentsKey, JSON.stringify(news.comments));
+    }
+
+    // Função para criar um card de notícia
+    function createNewsCard(news) {
+      const card = document.createElement('article');
+      card.className =
+        'glass p-6 rounded-2xl shadow-lg flex flex-col md:flex-row gap-6 hover:scale-[1.03] transition-transform duration-300 relative';
+
+      // Ribbon "Mais Curtidas"
+      if (news.likes >= 10) {
+        const ribbon = document.createElement('div');
+        ribbon.className = 'absolute top-4 left-4 bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg select-none';
+        ribbon.textContent = 'Popular';
+        card.appendChild(ribbon);
+      }
+
+      // Imagem
+      const img = document.createElement('img');
+      img.src = news.image;
+      img.alt = `Imagem ilustrativa da notícia: ${news.title}`;
+      img.className =
+        'w-full md:w-72 h-48 md:h-56 object-cover rounded-2xl flex-shrink-0 shadow-md transition-transform duration-300 hover:scale-105';
+
+      // Conteúdo textual
+      const content = document.createElement('div');
+      content.className = 'flex flex-col flex-grow';
+
+      // Título
+      const title = document.createElement('h3');
+      title.className =
+        'text-2xl font-extrabold mb-3 text-indigo-900 dark:text-indigo-300 leading-tight select-text';
+      title.textContent = news.title;
+
+      // Descrição
+      const desc = document.createElement('p');
+      desc.className = 'text-gray-700 dark:text-gray-300 flex-grow mb-4 leading-relaxed select-text';
+      desc.textContent = news.description;
+
+      // Fonte e link
+      const sourceLink = document.createElement('a');
+      sourceLink.href = news.source;
+      sourceLink.target = '_blank';
+      sourceLink.rel = 'noopener noreferrer';
+      sourceLink.className =
+        'text-indigo-600 hover:text-indigo-800 font-semibold text-sm flex items-center gap-2 transition select-text';
+      sourceLink.innerHTML = `<i class="fas fa-external-link-alt"></i> Visitar fonte (${news.sourceName})`;
+
+      // Botões de ação
+      const actions = document.createElement('div');
+      actions.className =
+        'mt-6 flex flex-wrap gap-4 justify-start md:justify-start';
+
+      // Botão áudio (text-to-speech)
+      const audioBtn = document.createElement('button');
+      audioBtn.type = 'button';
+      audioBtn.className =
+        'flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-3xl font-semibold shadow-md transition focus:outline-none focus:ring-4 focus:ring-indigo-400';
+      audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+      audioBtn.setAttribute('aria-label', `Ouvir notícia: ${news.title}`);
+
+      audioBtn.addEventListener('click', () => {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(
+            `${news.title}. ${news.description}`
+          );
+          utterance.lang = 'pt-BR';
+          window.speechSynthesis.speak(utterance);
+        } else {
+          alert('Seu navegador não suporta síntese de voz.');
+        }
+      });
+
+      // Curtir (apenas 1 curtida por usuário)
+      const likeBtn = document.createElement('button');
+      likeBtn.type = 'button';
+      likeBtn.className =
+        'flex items-center gap-3 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-3xl font-semibold shadow-md transition focus:outline-none focus:ring-4 focus:ring-red-400';
+      likeBtn.innerHTML = '<i class="fas fa-heart"></i> ';
+      likeBtn.setAttribute('aria-label', `Curtir notícia: ${news.title}`);
+
+      // Contador de curtidas
+      const likeCount = document.createElement('span');
+      likeCount.className = 'ml-1 font-semibold text-white select-none text-lg';
+      likeCount.textContent = news.likes;
+
+      likeBtn.appendChild(likeCount);
+
+      if (news.userLiked) {
+        likeBtn.classList.add('bg-red-800', 'cursor-default');
+        likeBtn.disabled = true;
+      }
+
+      likeBtn.addEventListener('click', () => {
+        if (news.userLiked) return;
+        news.likes++;
+        news.userLiked = true;
+        saveNewsState(news);
+        likeCount.textContent = news.likes;
+        likeBtn.classList.add('bg-red-800', 'cursor-default');
+        likeBtn.disabled = true;
+        likeBtn.classList.remove('hover:bg-red-700');
+        likeBtn.classList.add('hover:cursor-default');
+        likeBtn.classList.add('animate-pulse');
+        setTimeout(() => likeBtn.classList.remove('animate-pulse'), 500);
+        // Atualizar ribbon se necessário
+        if (news.likes === 10) {
+          const ribbon = document.createElement('div');
+          ribbon.className = 'absolute top-4 left-4 bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg select-none';
+          ribbon.textContent = 'Popular';
+          card.appendChild(ribbon);
+        }
+      });
+
+      // Comentários
+      const commentBtn = document.createElement('button');
+      commentBtn.type = 'button';
+      commentBtn.className =
+        'flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-3xl font-semibold shadow-md transition focus:outline-none focus:ring-4 focus:ring-green-400';
+      commentBtn.innerHTML = `<i class="fas fa-comments"></i>  (${news.comments.length})`;
+      commentBtn.setAttribute('aria-label', `Ver comentários da notícia: ${news.title}`);
+
+      commentBtn.addEventListener('click', () => {
+        openCommentsModal(news.id, news.title);
+      });
+
+      // Baixar notícia (download do texto em txt)
+      const downloadBtn = document.createElement('button');
+      downloadBtn.type = 'button';
+      downloadBtn.className =
+        'flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-3xl font-semibold shadow-md transition focus:outline-none focus:ring-4 focus:ring-yellow-400';
+      downloadBtn.innerHTML = '<i class="fas fa-download"></i> ';
+      downloadBtn.setAttribute('aria-label', `Baixar notícia: ${news.title}`);
+
+      downloadBtn.addEventListener('click', () => {
+        const blob = new Blob(
+          [`${news.title}\n\n${news.description}\n\nFonte: ${news.source}`],
+          { type: 'text/plain;charset=utf-8' }
+        );
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${news.title.replace(/\s+/g, '_')}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+
+      // Compartilhar (Web Share API)
+      const shareBtn = document.createElement('button');
+      shareBtn.type = 'button';
+      shareBtn.className =
+        'flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-3xl font-semibold shadow-md transition focus:outline-none focus:ring-4 focus:ring-blue-400';
+      shareBtn.innerHTML = '<i class="fas fa-share-alt"></i> ';
+      shareBtn.setAttribute('aria-label', `Compartilhar notícia: ${news.title}`);
+
+      shareBtn.addEventListener('click', async () => {
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: news.title,
+              text: news.description,
+              url: news.source,
+            });
+          } catch (err) {
+            alert('Erro ao compartilhar: ' + err.message);
+          }
+        } else {
+          alert('Seu navegador não suporta compartilhamento nativo.');
+        }
+      });
+
+      // Denúncia (alerta simples)
+      const reportBtn = document.createElement('button');
+      reportBtn.type = 'button';
+      reportBtn.className =
+        'flex items-center gap-2 bg-gray-700 hover:bg-gray-800 text-white px-5 py-2 rounded-3xl font-semibold shadow-md transition focus:outline-none focus:ring-4 focus:ring-gray-500';
+      reportBtn.innerHTML = '<i class="fas fa-flag"></i> Denunciar';
+      reportBtn.setAttribute('aria-label', `Denunciar notícia: ${news.title}`);
+
+      reportBtn.addEventListener('click', () => {
+        const reason = prompt(
+          'Por favor, informe o motivo da denúncia para esta notícia:'
+        );
+        if (reason && reason.trim().length > 3) {
+          alert('Denúncia enviada. Obrigado por ajudar a manter a qualidade.');
+        } else if (reason !== null) {
+          alert('Motivo inválido. Denúncia não enviada.');
+        }
+      });
+
+      actions.appendChild(audioBtn);
+      actions.appendChild(likeBtn);
+      actions.appendChild(commentBtn);
+      actions.appendChild(downloadBtn);
+      actions.appendChild(shareBtn);
+      actions.appendChild(reportBtn);
+
+      content.appendChild(title);
+      content.appendChild(desc);
+      content.appendChild(sourceLink);
+      content.appendChild(actions);
+
+      card.appendChild(img);
+      card.appendChild(content);
+
+      return card;
+    }
+
+    // Renderizar notícias
+    const newsList = document.getElementById('newsList');
+
+    // Função para limpar e renderizar todas notícias
+    function renderNewsList(newsArray) {
+      newsList.innerHTML = '';
+      if (newsArray.length === 0) {
+        const noNews = document.createElement('p');
+        noNews.className = 'text-center text-indigo-700 text-xl font-semibold mt-20 select-none';
+        noNews.textContent = 'Nenhuma notícia encontrada.';
+        newsList.appendChild(noNews);
+        return;
+      }
+      newsArray.forEach((news) => {
+        const card = createNewsCard(news);
+        newsList.appendChild(card);
+      });
+    }
+
+    // Comentários
+    const commentsModal = document.getElementById('commentsModal');
+    const closeCommentsBtn = document.getElementById('closeCommentsBtn');
+    const commentsContainer = document.getElementById('commentsContainer');
+    const commentForm = document.getElementById('commentForm');
+    const commentInput = document.getElementById('commentInput');
+
+    let currentNewsId = null;
+
+    // Abrir modal de comentários
+    function openCommentsModal(newsId, newsTitle) {
+      currentNewsId = newsId;
+      commentsContainer.innerHTML = '';
+      commentsModal.querySelector('h6').textContent = `Comentários - ${newsTitle}`;
+      loadComments(newsId);
+      commentsModal.classList.remove('hidden');
+      commentInput.value = '';
+      commentInput.focus();
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Fechar modal de comentários
+    closeCommentsBtn.addEventListener('click', () => {
+      commentsModal.classList.add('hidden');
+      document.body.style.overflow = '';
+      currentNewsId = null;
+    });
+
+    // Fechar modal ao clicar fora do conteúdo
+    commentsModal.addEventListener('click', (e) => {
+      if (e.target === commentsModal) {
+        commentsModal.classList.add('hidden');
+        document.body.style.overflow = '';
+        currentNewsId = null;
+      }
+    });
+
+    // Carregar comentários do estado
+    function loadComments(newsId) {
+      const news = newsState.find((n) => n.id === newsId);
+      if (!news) return;
+      if (news.comments.length === 0) {
+        const noComments = document.createElement('p');
+        noComments.className = 'text-indigo-600 italic select-none text-center';
+        noComments.textContent = 'Nenhum comentário ainda. Seja o primeiro!';
+        commentsContainer.appendChild(noComments);
+        return;
+      }
+      news.comments.forEach((comment, index) => {
+        const commentEl = document.createElement('div');
+        commentEl.className =
+          'bg-white/90 dark:bg-gray-700 rounded-xl p-5 text-indigo-900 dark:text-indigo-100 break-words whitespace-pre-wrap shadow-md flex justify-between items-start gap-4 relative';
+
+        // Texto do comentário
+        const textEl = document.createElement('p');
+        textEl.className = 'flex-grow select-text';
+        textEl.textContent = comment;
+
+        // Botão para remover comentário
+        const removeBtn = document.createElement('button');
+        removeBtn.className =
+          'text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-red-600 rounded p-2 absolute top-3 right-3';
+        removeBtn.setAttribute('aria-label', `Remover comentário ${index + 1}`);
+        removeBtn.title = 'Remover comentário';
+        removeBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+
+        removeBtn.addEventListener('click', () => {
+          if (confirm('Tem certeza que deseja remover este comentário?')) {
+            removeComment(newsId, index);
+          }
+        });
+
+        commentEl.appendChild(textEl);
+        commentEl.appendChild(removeBtn);
+
+        commentsContainer.appendChild(commentEl);
+      });
+    }
+
+    // Remover comentário
+    function removeComment(newsId, index) {
+      const news = newsState.find((n) => n.id === newsId);
+      if (!news) return;
+      if (index >= 0 && index < news.comments.length) {
+        news.comments.splice(index, 1);
+        saveNewsState(news);
+        commentsContainer.innerHTML = '';
+        loadComments(newsId);
+        updateCommentCount(newsId);
+      }
+    }
+
+    // Enviar comentário
+    commentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!currentNewsId) return;
+      const commentText = commentInput.value.trim();
+      if (commentText.length < 3) {
+        alert('Comentário muito curto.');
+        return;
+      }
+      const news = newsState.find((n) => n.id === currentNewsId);
+      if (!news) return;
+      news.comments.push(commentText);
+      saveNewsState(news);
+      commentsContainer.innerHTML = '';
+      loadComments(currentNewsId);
+      commentInput.value = '';
+      commentInput.focus();
+      updateCommentCount(currentNewsId);
+    });
+
+    // Atualiza o contador de comentários no card da notícia
+    function updateCommentCount(newsId) {
+      const news = newsState.find((n) => n.id === newsId);
+      if (!news) return;
+      const cards = newsList.querySelectorAll('article');
+      cards.forEach((card) => {
+        const titleEl = card.querySelector('h3');
+        if (titleEl && titleEl.textContent === news.title) {
+          const commentBtn = card.querySelector('button[aria-label^="Ver comentários"]');
+          if (commentBtn) {
+            commentBtn.innerHTML = `<i class="fas fa-comments"></i> Comentários (${news.comments.length})`;
+          }
+        }
+      });
+    }
+
+    // Search and sort functionality
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+
+    function filterAndSortNews() {
+      let filtered = newsState.filter((news) => {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        return (
+          news.title.toLowerCase().includes(searchTerm) ||
+          news.description.toLowerCase().includes(searchTerm) ||
+          news.sourceName.toLowerCase().includes(searchTerm)
+        );
+      });
+
+      switch (sortSelect.value) {
+        case 'liked':
+          filtered.sort((a, b) => b.likes - a.likes);
+          break;
+        case 'comments':
+          filtered.sort((a, b) => b.comments.length - a.comments.length);
+          break;
+        case 'title':
+          filtered.sort((a, b) => a.title.localeCompare(b.title));
+          break;
+        case 'recent':
+        default:
+          filtered.sort((a, b) => a.id - b.id); // Assuming id is incremental by recency
+          break;
+      }
+      renderNewsList(filtered);
+    }
+
+    searchInput.addEventListener('input', () => {
+      filterAndSortNews();
+    });
+
+    sortSelect.addEventListener('change', () => {
+      filterAndSortNews();
+    });
+
+    // Scroll to top button
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        scrollTopBtn.style.display = 'block';
+      } else {
+        scrollTopBtn.style.display = 'none';
+      }
+    });
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      searchInput.focus();
+    });
+
+    // Keyboard accessibility for menu
+    menuBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (menu.classList.contains('hidden')) {
+          menu.classList.remove('hidden');
+          menuBtn.setAttribute('aria-expanded', 'true');
+          menu.querySelector('button').focus();
+        } else {
+          menu.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+
+    // Keyboard navigation inside menu
+    const menuButtons = Array.from(menu.querySelectorAll('button'));
+    menuButtons.forEach((btn, idx) => {
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          const nextIdx = (idx + 1) % menuButtons.length;
+          menuButtons[nextIdx].focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          const prevIdx = (idx - 1 + menuButtons.length) % menuButtons.length;
+          menuButtons[prevIdx].focus();
+        } else if (e.key === 'Escape') {
+          menu.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          menuBtn.focus();
+        }
+      });
+    });
+
+    // Inicialização
+    initializeNewsState();
+    renderNewsList(newsState);
+  </script>
+</body>
+</html>
